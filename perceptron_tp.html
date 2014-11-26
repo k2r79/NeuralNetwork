@@ -1,9 +1,9 @@
 <html>
 	<head>
 		<script src="js/jquery-1.11.1.min.js"></script>
-        <script src="js/perceptron.js"></script>
+        <script src="js/neural-network.js"></script>
 		<script>
-            var perceptron = new Perceptron();
+            var perceptron;
 
 			var PIXEL_SIZE = 10; //pixels
 
@@ -21,7 +21,8 @@
 				GRID_WIDTH = Math.floor(canvas.width/PIXEL_SIZE);
 				GRID_HEIGHT = Math.floor(canvas.height/PIXEL_SIZE);
 
-                perceptron.initialize(GRID_WIDTH * GRID_HEIGHT, 10);
+                perceptron = new Perceptron(GRID_WIDTH * GRID_HEIGHT, 10);
+                perceptron.initialize();
 
 				resetCanvas();
 
