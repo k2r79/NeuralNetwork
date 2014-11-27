@@ -1,59 +1,72 @@
 function NeuralNetwork(numberOfInputNeurons, numberOfOutputNeurons) {
-    this.learningRate = 0.1;
+    this.learningRate = 0.01;
     this.recognitionThreshold = 0.5;
 
     this.numberNeuronsPerLayer = [ numberOfInputNeurons, numberOfInputNeurons * 1.5, numberOfOutputNeurons ];
 
     this.weights = []; // weights[layerIndex][neuronIndex][previousNeuronIndex] = weight;
-    this.output = [];
+    this.outputs = []; // output[layerIndex][neuronIndex]
 }
 
 NeuralNetwork.prototype.initialize = function() {
-    for (var layerIndex = 1; layerIndex < this.numberNeuronsPerLayer.length; layerIndex++) {
+    this.initializeWeights();
+    this.initializeOutputs();
+};
+
+NeuralNetwork.prototype.initializeWeights = function() {
+    for (var layerIndex = 0; layerIndex < this.numberNeuronsPerLayer.length; layerIndex++) {
         this.weights[layerIndex] = [];
         for (var neuronIndex = 0; neuronIndex < this.numberNeuronsPerLayer[layerIndex]; neuronIndex++) {
+            this.weights[layerIndex][neuronIndex] = [];
             for (var previousLayerNeuronIndex = 0; previousLayerNeuronIndex < this.numberNeuronsPerLayer[layerIndex]; previousLayerNeuronIndex++) {
                 this.weights[layerIndex][neuronIndex][previousLayerNeuronIndex] = 0;
             }
         }
     }
-
-    this.initializeOutputs();
-};
+}
 
 NeuralNetwork.prototype.initializeOutputs = function() {
-    for (var i = 0; i < this.numberNeuronsPerLayer[this.numberNeuronsPerLayer.length - 1]; i++) {
-        this.output[i] = 0;
+    for (var layerIndex = 0; layerIndex < this.numberNeuronsPerLayer.length; layerIndex++) {
+        this.outputs[layerIndex] = [];
+        for (var i = 0; i < this.numberNeuronsPerLayer[layerIndex]; i++) {
+            this.outputs[layerIndex][i] = 0;
+        }
     }
 };
 
-NeuralNetwork.prototype.learn = function(input, number) {
-    /**
-     * P = P + t * (A - O) * E
-     *
-     * P = Poids de la connexion
-     * t = Taux d'apprentissage
-     * A = Sortie attendue
-     * O = Sortie obtenue
-     * E = Entrée
-     */
+NeuralNetwork.prototype.learn = function(inputs, numberToLearn) {
+    var outputs = this.process(inputs);
 
-    this.process(input);
+    // Compute errors for the ouput layer
+    var previousErrors = [];
+    for (var neuronIndex = 0; neuronIndex < this.weights[this.weights.length - 1].length; neuronIndex++) {
+        var expectedOutput = neuronIndex == numberToLearn ? 1 : 0;
 
-    for (var y = 0; y < this.network.length; y++) {
-        for (var x = 0; x < this.network[y].length; x++) {
-            if (this.network[y][x] != -1) {
+        previousErrors[neuronIndex] = (expectedOutput - outputs[outputs.length - 1][neuronIndex]) * (outputs[outputs.length - 1][neuronIndex] * (1 - outputs[outputs.length - 1][neuronIndex]));
+    }
 
-                var expectedValue = 0;
-                if (x == number) {
-                    expectedValue = 1;
-                }
+    // Backpropagation
+    for (var layerIndex = this.numberNeuronsPerLayer.length - 2; layerIndex >= 0; layerIndex--) {
+        var errors = [];
+        for (neuronIndex = 0; neuronIndex < this.numberNeuronsPerLayer[layerIndex].length; neuronIndex++) {
+            var error = 0;
+            for (var nextLayerNeuronIndex = 0; nextLayerNeuronIndex < this.weights[layerIndex + 1][neuronIndex].length; nextLayerNeuronIndex++) {
+                error += this.weights[layerIndex + 1][neuronIndex][nextLayerNeuronIndex] * previousErrors[nextLayerNeuronIndex];
+            }
 
-                var neuronActivation = this.output[x] > this.activationValue ? 1 : 0;
+            errors[neuronIndex] = error * (outputs[layerIndex][neuronIndex] * (1 - outputs[layerIndex][neuronIndex]));
 
-                this.network[y][x] = this.network[y][x] + this.learningRate * (expectedValue - neuronActivation) * input[y];
+            var derivative = 0;
+            for (var previousLayerNeuronIndex = 0; previousLayerNeuronIndex < this.weights[layerIndex][neuronIndex].length; previousLayerNeuronIndex++) {
+                derivative += errors[neuronIndex] * outputs[previousLayerNeuronIndex];
+            }
+
+            for (previousLayerNeuronIndex = 0; previousLayerNeuronIndex < this.weights[layerIndex][neuronIndex].length; previousLayerNeuronIndex++) {
+                this.weights[layerIndex][neuronIndex][previousLayerNeuronIndex] += + (derivative * this.learningRate);
             }
         }
+
+        previousErrors = errors;
     }
 };
 
@@ -61,9 +74,8 @@ NeuralNetwork.prototype.process = function(inputs) {
     this.initializeOutputs();
 
     // Compute input layer's outputs
-    var outputs = [];
     for (var inputIndex = 0; inputIndex < inputs.length; inputIndex++) {
-        outputs[inputIndex] = inputs[inputIndex];
+        this.outputs[0][inputIndex] = inputs[inputIndex];
     }
 
     // Compute the next layers' outputs
@@ -71,12 +83,19 @@ NeuralNetwork.prototype.process = function(inputs) {
         for (var neuronIndex = 0; neuronIndex < this.numberNeuronsPerLayer[layerIndex].length; neuronIndex++) {
             var input = 0;
             for (var previousLayerNeuronIndex = 0; previousLayerNeuronIndex < this.weights[layerIndex][neuronIndex].length; previousLayerNeuronIndex++) {
-                input += this.weights[layerIndex][neuronIndex][previousLayerNeuronIndex] * outputs[previousLayerNeuronIndex];
+                input += this.weights[layerIndex][neuronIndex][previousLayerNeuronIndex] * this.outputs[layerIndex - 1][previousLayerNeuronIndex];
             }
 
-            outputs[neuronIndex] = 1 / (1 + Math.exp(input));
+            this.outputs[layerIndex][neuronIndex] = 1 / (1 + Math.exp(-input));
         }
     }
+
+    return this.outputs;
+};
+
+NeuralNetwork.prototype.recognizeNumber = function(inputs) {
+    var outputs = this.process(inputs);
+    outputs = outputs[outputs.length - 1];
 
     // Get the recognized numbers
     var recognizedNumbers = [];
@@ -89,15 +108,6 @@ NeuralNetwork.prototype.process = function(inputs) {
     return recognizedNumbers;
 };
 
-NeuralNetwork.prototype.displayNetwork = function() {
-    var networkString = "";
-    for (var y = 0; y < this.network.length; y++) {
-        for (var x = 0; x < this.network[y].length; x++) {
-            networkString += this.network[y][x] + " ";
-        }
-
-        networkString += "\n";
-    }
-
-    console.log(networkString);
+NeuralNetwork.prototype.displayWeights = function() {
+    console.log(this.weights);
 };
