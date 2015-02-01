@@ -3,12 +3,13 @@ function Neuron() {
     this.bias = Math.random();
     this.leftSynapses = [];
     this.rightSynapses = [];
+    this.errorGradient = null;
 }
 
 Neuron.prototype.activate = function() {
-    // If the neuron has no synapses, return the ouput value
+    // If the neuron has no left synapses, it's an input neuron
     if (this.leftSynapses.length < 1) {
-        return this.output;
+        return;
     }
 
     // Sigmoid function
@@ -23,4 +24,16 @@ Neuron.prototype.activate = function() {
 
     // Sigmoid function
     this.output = 1 / (1 + Math.exp(-z));
+};
+
+Neuron.prototype.learn = function(desiredValue, learningRate) {
+    // Compute the neuron's error gradient
+    this.errorGradient = this.output * (1 - this.output) * (desiredValue - this.output);
+
+    // Adjust the left synapses' weights
+    for (var synapseIndex = 0; synapseIndex < this.leftSynapses.length; synapseIndex++) {
+        var leftSynapse = this.leftSynapses[synapseIndex];
+
+        leftSynapse.weight += learningRate * leftSynapse.leftNeuron.output * this.errorGradient;
+    }
 };
