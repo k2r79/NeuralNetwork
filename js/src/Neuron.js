@@ -28,12 +28,35 @@ Neuron.prototype.activate = function() {
 
 Neuron.prototype.learn = function(desiredValue, learningRate) {
     // Compute the neuron's error gradient
-    this.errorGradient = this.output * (1 - this.output) * (desiredValue - this.output);
+    this.errorGradient = this.output * (1 - this.output);
 
-    // Adjust the left synapses' weights
+    if (desiredValue != null) {
+        // For an output neuron
+        this.errorGradient *= (desiredValue - this.output);
+    } else if (this.leftSynapses.length > 0) {
+        // For a hidden neuron
+        var errorGradientSum = 0;
+        for (var rightSynapseIndex = 0; rightSynapseIndex < this.rightSynapses.length; rightSynapseIndex++) {
+            var rightSynapse = this.rightSynapses[rightSynapseIndex];
+
+            errorGradientSum += rightSynapse.weight * rightSynapse.rightNeuron.errorGradient;
+        }
+
+        this.errorGradient *= errorGradientSum;
+    } else {
+        // For an input neuron (exit)
+        return;
+    }
+
+
+    // Iterate thru the previous neurons
     for (var synapseIndex = 0; synapseIndex < this.leftSynapses.length; synapseIndex++) {
         var leftSynapse = this.leftSynapses[synapseIndex];
 
+        // Adjust the left synapses' weights
         leftSynapse.weight += learningRate * leftSynapse.leftNeuron.output * this.errorGradient;
+
+        // Order previous neuron to learn
+        leftSynapse.leftNeuron.learn(null, learningRate);
     }
 };

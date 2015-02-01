@@ -50,6 +50,10 @@ describe("A neuron", function() {
             new Neuron()
         ];
 
+        // Setting the next neurons' biases
+        nextNeurons[0].bias = 0.2567433442454785;
+        nextNeurons[1].bias = 0.894932294730097;
+
         // Create the right synapses with the previous layer neurons
         var rightSynapses = [
             new Synapse(neuron, nextNeurons[0]),
@@ -59,10 +63,6 @@ describe("A neuron", function() {
         // Setting the next neurons' weights
         rightSynapses[0].weight = 0.89;
         rightSynapses[1].weight = 0.72;
-
-        // Setting the next neurons' error gradient
-        //rightSynapses[0].errorGradient = -0.22;
-        //rightSynapses[1].errorGradient = 0.05;
 
         // Installing the right synapses in the neuron
         neuron.rightSynapses = rightSynapses;
@@ -136,20 +136,36 @@ describe("A neuron", function() {
         expect(neuron.leftSynapses[2].weight).toEqual(0.9414674670441489);
     });
 
-    //it("can learn", function() {
-    //    // Mock the learning rate
-    //    var learningRate = 0.05;
-    //
-    //    // Activate the neurons
-    //    nextNeurons[0].activate();
-    //    nextNeurons[1].activate();
-    //
-    //    // Check the activation and output of the neuron
-    //    expect(neuron.output).toEqual(0.5106234010049637);
-    //
-    //    // Make the neuron learn
-    //    //neuron.learn(learningRate);
-    //
-    //
-    //});
+    it("can learn", function() {
+        // Activate the neurons
+        nextNeurons[0].activate();
+        nextNeurons[1].activate();
+
+        // Check the activation and output of the neuron
+        expect(neuron.output).toEqual(0.5106234010049637);
+
+        // Install a learning spy on the previous neurons
+        spyOn(previousNeurons[0], "learn");
+        spyOn(previousNeurons[1], "learn");
+        spyOn(previousNeurons[2], "learn");
+
+        // Make the neuron learn
+        nextNeurons[0].learn(0, learningRate);
+        nextNeurons[1].learn(1, learningRate);
+
+        // Check the cascading learn
+        expect(previousNeurons[0].learn).toHaveBeenCalled();
+        expect(previousNeurons[1].learn).toHaveBeenCalled();
+        expect(previousNeurons[2].learn).toHaveBeenCalled();
+
+        console.log(neuron);
+
+        // Check the neuron's error gradient
+        expect(neuron.errorGradient).toEqual(-0.0035802431907934586);
+
+        // Check the new left synapses' weights
+        expect(neuron.leftSynapses[0].weight).toEqual(0.5297809176901335);
+        expect(neuron.leftSynapses[1].weight).toEqual(0.11932590058502579);
+        expect(neuron.leftSynapses[2].weight).toEqual(0.9395955403510154);
+    });
 });
