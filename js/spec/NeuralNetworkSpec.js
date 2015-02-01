@@ -15,36 +15,36 @@ describe("A neural network", function() {
         neuralNetwork.hiddenLayers[0].neurons[3].bias = 0.32;
 
         // Setting the hidden layers' neurons' synapses' weights
-        neuralNetwork.hiddenLayers[0].neurons[0].synapses[0].weight = 0.45;
-        neuralNetwork.hiddenLayers[0].neurons[0].synapses[1].weight = 0.34;
-        neuralNetwork.hiddenLayers[0].neurons[0].synapses[2].weight = 0.22;
+        neuralNetwork.hiddenLayers[0].neurons[0].leftSynapses[0].weight = 0.45;
+        neuralNetwork.hiddenLayers[0].neurons[0].leftSynapses[1].weight = 0.34;
+        neuralNetwork.hiddenLayers[0].neurons[0].leftSynapses[2].weight = 0.22;
 
-        neuralNetwork.hiddenLayers[0].neurons[1].synapses[0].weight = 0.99;
-        neuralNetwork.hiddenLayers[0].neurons[1].synapses[1].weight = 0.67;
-        neuralNetwork.hiddenLayers[0].neurons[1].synapses[2].weight = 0.01;
+        neuralNetwork.hiddenLayers[0].neurons[1].leftSynapses[0].weight = 0.99;
+        neuralNetwork.hiddenLayers[0].neurons[1].leftSynapses[1].weight = 0.67;
+        neuralNetwork.hiddenLayers[0].neurons[1].leftSynapses[2].weight = 0.01;
 
-        neuralNetwork.hiddenLayers[0].neurons[2].synapses[0].weight = 0.21;
-        neuralNetwork.hiddenLayers[0].neurons[2].synapses[1].weight = 0.56;
-        neuralNetwork.hiddenLayers[0].neurons[2].synapses[2].weight = 0.67;
+        neuralNetwork.hiddenLayers[0].neurons[2].leftSynapses[0].weight = 0.21;
+        neuralNetwork.hiddenLayers[0].neurons[2].leftSynapses[1].weight = 0.56;
+        neuralNetwork.hiddenLayers[0].neurons[2].leftSynapses[2].weight = 0.67;
 
-        neuralNetwork.hiddenLayers[0].neurons[3].synapses[0].weight = 0.09;
-        neuralNetwork.hiddenLayers[0].neurons[3].synapses[1].weight = 0.89;
-        neuralNetwork.hiddenLayers[0].neurons[3].synapses[2].weight = 0.34;
+        neuralNetwork.hiddenLayers[0].neurons[3].leftSynapses[0].weight = 0.09;
+        neuralNetwork.hiddenLayers[0].neurons[3].leftSynapses[1].weight = 0.89;
+        neuralNetwork.hiddenLayers[0].neurons[3].leftSynapses[2].weight = 0.34;
 
         // Setting the output layers' neurons' biases
         neuralNetwork.outputLayer.neurons[0].bias = 0.64;
         neuralNetwork.outputLayer.neurons[1].bias = 0.15;
 
         // Setting the output layers' neurons' synapses' weights
-        neuralNetwork.outputLayer.neurons[0].synapses[0].weight = 0.88;
-        neuralNetwork.outputLayer.neurons[0].synapses[1].weight = 0.13;
-        neuralNetwork.outputLayer.neurons[0].synapses[2].weight = 0.99;
-        neuralNetwork.outputLayer.neurons[0].synapses[3].weight = 0.07;
+        neuralNetwork.outputLayer.neurons[0].leftSynapses[0].weight = 0.88;
+        neuralNetwork.outputLayer.neurons[0].leftSynapses[1].weight = 0.13;
+        neuralNetwork.outputLayer.neurons[0].leftSynapses[2].weight = 0.99;
+        neuralNetwork.outputLayer.neurons[0].leftSynapses[3].weight = 0.07;
 
-        neuralNetwork.outputLayer.neurons[1].synapses[0].weight = 0.19;
-        neuralNetwork.outputLayer.neurons[1].synapses[1].weight = 0.32;
-        neuralNetwork.outputLayer.neurons[1].synapses[2].weight = 0.31;
-        neuralNetwork.outputLayer.neurons[1].synapses[3].weight = 0.29;
+        neuralNetwork.outputLayer.neurons[1].leftSynapses[0].weight = 0.19;
+        neuralNetwork.outputLayer.neurons[1].leftSynapses[1].weight = 0.32;
+        neuralNetwork.outputLayer.neurons[1].leftSynapses[2].weight = 0.31;
+        neuralNetwork.outputLayer.neurons[1].leftSynapses[3].weight = 0.29;
 
         // Forward propagate
         neuralNetwork.forwardPropagate();

@@ -1,23 +1,24 @@
 function Neuron() {
     this.output = null;
     this.bias = Math.random();
-    this.synapses = [];
+    this.leftSynapses = [];
+    this.rightSynapses = [];
 }
 
 Neuron.prototype.activate = function() {
     // If the neuron has no synapses, return the ouput value
-    if (this.synapses.length < 1) {
+    if (this.leftSynapses.length < 1) {
         return this.output;
     }
 
     // Sigmoid function
     var z = 0;
-    for (var synapseIndex = 0; synapseIndex < this.synapses.length; synapseIndex++) {
+    for (var synapseIndex = 0; synapseIndex < this.leftSynapses.length; synapseIndex++) {
         // Activate the previous neuron
-        this.synapses[synapseIndex].neuron.activate();
+        this.leftSynapses[synapseIndex].leftNeuron.activate();
 
         // Sum(w(x) * o(x) - b)
-        z += this.synapses[synapseIndex].weight * this.synapses[synapseIndex].neuron.output - this.bias;
+        z += this.leftSynapses[synapseIndex].weight * this.leftSynapses[synapseIndex].leftNeuron.output - this.bias;
     }
 
     // Sigmoid function

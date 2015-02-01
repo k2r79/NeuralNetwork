@@ -32,7 +32,7 @@ describe("A neuron", function() {
         synapses[2].weight = 0.94;
 
         // Installing the synapses in the neuron
-        neuron.synapses = synapses;
+        neuron.leftSynapses = synapses;
 
         // Setting the neuron's bias
         neuron.bias = 0.10;
@@ -48,7 +48,7 @@ describe("A neuron", function() {
 
     it("can be an input layer neuron", function() {
         // Delete the previously set synapses
-        neuron.synapses = [];
+        neuron.leftSynapses = [];
 
         // Force the neuron's output
         neuron.output = 1;

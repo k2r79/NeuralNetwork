@@ -23,21 +23,21 @@ describe("A layer", function() {
         layer.neurons[3].bias = 0.32;
 
         // Setting the current layers' neurons' synapses' weights
-        layer.neurons[0].synapses[0].weight = 0.45;
-        layer.neurons[0].synapses[1].weight = 0.34;
-        layer.neurons[0].synapses[2].weight = 0.22;
+        layer.neurons[0].leftSynapses[0].weight = 0.45;
+        layer.neurons[0].leftSynapses[1].weight = 0.34;
+        layer.neurons[0].leftSynapses[2].weight = 0.22;
 
-        layer.neurons[1].synapses[0].weight = 0.99;
-        layer.neurons[1].synapses[1].weight = 0.67;
-        layer.neurons[1].synapses[2].weight = 0.01;
+        layer.neurons[1].leftSynapses[0].weight = 0.99;
+        layer.neurons[1].leftSynapses[1].weight = 0.67;
+        layer.neurons[1].leftSynapses[2].weight = 0.01;
 
-        layer.neurons[2].synapses[0].weight = 0.21;
-        layer.neurons[2].synapses[1].weight = 0.56;
-        layer.neurons[2].synapses[2].weight = 0.67;
+        layer.neurons[2].leftSynapses[0].weight = 0.21;
+        layer.neurons[2].leftSynapses[1].weight = 0.56;
+        layer.neurons[2].leftSynapses[2].weight = 0.67;
 
-        layer.neurons[3].synapses[0].weight = 0.09;
-        layer.neurons[3].synapses[1].weight = 0.89;
-        layer.neurons[3].synapses[2].weight = 0.34;
+        layer.neurons[3].leftSynapses[0].weight = 0.09;
+        layer.neurons[3].leftSynapses[1].weight = 0.89;
+        layer.neurons[3].leftSynapses[2].weight = 0.34;
     });
 
     it("is linked to previous layer", function() {
@@ -46,11 +46,17 @@ describe("A layer", function() {
             var neuron = layer.neurons[neuronIndex];
 
             // Check the number of links
-            expect(neuron.synapses.length).toEqual(previousLayer.neurons.length);
+            expect(neuron.leftSynapses.length).toEqual(previousLayer.neurons.length);
 
             // Check the synapses' neurons against the previous layer's neurons
             for (var previousNeuronIndex = 0; previousNeuronIndex < previousLayer.neurons.length; previousNeuronIndex++) {
-                expect(neuron.synapses[previousNeuronIndex].neuron).toEqual(previousLayer.neurons[previousNeuronIndex]);
+                var previousNeuron = previousLayer.neurons[previousNeuronIndex];
+
+                // Check the neuron's left hand side synapses
+                expect(neuron.leftSynapses[previousNeuronIndex].leftNeuron).toEqual(previousNeuron);
+
+                // Check the previous neuron's right hand side synapses
+                expect(previousNeuron.rightSynapses[neuronIndex].rightNeuron).toEqual(neuron);
             }
         }
     });

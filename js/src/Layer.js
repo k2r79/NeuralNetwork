@@ -15,7 +15,12 @@ Layer.prototype.linkTo = function(layer) {
         for (var neuronIndex = 0; neuronIndex < this.neurons.length; neuronIndex++) {
             var neuron = this.neurons[neuronIndex];
 
-            neuron.synapses.push(new Synapse(previousNeuron));
+            // Create the new synapse
+            var synapse = new Synapse(previousNeuron, neuron);
+
+            // Assign the synapse to both neurons
+            neuron.leftSynapses.push(synapse);
+            previousNeuron.rightSynapses.push(synapse);
         }
     }
 };
