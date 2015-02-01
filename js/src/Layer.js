@@ -19,3 +19,11 @@ Layer.prototype.linkTo = function(layer) {
         }
     }
 };
+
+Layer.prototype.computeNeuronOutputs = function() {
+    // Iterate thru the layer's neurons
+    for (var neuronIndex = 0; neuronIndex < this.neurons.length; neuronIndex++) {
+        // Compute the current neuron's output
+        this.neurons[neuronIndex].activate();
+    }
+};
