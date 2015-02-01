@@ -1,10 +1,14 @@
 describe("A neuron", function() {
 
-    var neuron = new Neuron();
+    var neuron;
+    var previousNeurons;
 
-    it("is a sigmoid function", function() {
+    beforeEach(function() {
+        // Create a new neuron
+        neuron = new Neuron();
+
         // Create the previous layer neurons
-        var previousNeurons = [
+        previousNeurons = [
             new Neuron(),
             new Neuron(),
             new Neuron()
@@ -32,11 +36,42 @@ describe("A neuron", function() {
 
         // Setting the neuron's bias
         neuron.bias = 0.10;
+    });
 
+    it("is a sigmoid function", function() {
         // Activate neuron
         neuron.activate();
 
         // Check values
         expect(neuron.output).toEqual(0.5106234010049637);
+    });
+
+    it("can be an input layer neuron", function() {
+        // Delete the previously set synapses
+        neuron.synapses = [];
+
+        // Force the neuron's output
+        neuron.output = 1;
+
+        // Activate the neuron
+        neuron.activate();
+
+        // Check the forced value is used
+        expect(neuron.output).toEqual(1);
+    });
+
+    it("activates it's previous neurons", function() {
+        // Install spies on the previous neurons
+        spyOn(previousNeurons[0], 'activate');
+        spyOn(previousNeurons[1], 'activate');
+        spyOn(previousNeurons[2], 'activate');
+
+        // Activate neuron
+        neuron.activate();
+
+        // Check the previous neurons are activated
+        expect(previousNeurons[0].activate).toHaveBeenCalled();
+        expect(previousNeurons[1].activate).toHaveBeenCalled();
+        expect(previousNeurons[2].activate).toHaveBeenCalled();
     });
 });

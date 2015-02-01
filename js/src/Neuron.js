@@ -5,9 +5,18 @@ function Neuron() {
 }
 
 Neuron.prototype.activate = function() {
-    // Sum(w(x) * o(x) - b)
+    // If the neuron has no synapses, return the ouput value
+    if (this.synapses.length < 1) {
+        return this.output;
+    }
+
+    // Sigmoid function
     var z = 0;
     for (var synapseIndex = 0; synapseIndex < this.synapses.length; synapseIndex++) {
+        // Activate the previous neuron
+        this.synapses[synapseIndex].neuron.activate();
+
+        // Sum(w(x) * o(x) - b)
         z += this.synapses[synapseIndex].weight * this.synapses[synapseIndex].neuron.output - this.bias;
     }
 
