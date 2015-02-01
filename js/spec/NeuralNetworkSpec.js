@@ -50,7 +50,7 @@ describe("A neural network", function() {
         neuralNetwork.forwardPropagate();
 
         // Check the final output
-        expect(neuralNetwork.outputLayer.neurons[0].output).toEqual();
-        expect(neuralNetwork.outputLayer.neurons[1].output).toEqual();
+        expect(neuralNetwork.outputLayer.neurons[0].output).toEqual(0.14161325249117482);
+        expect(neuralNetwork.outputLayer.neurons[1].output).toEqual(0.47253007169626);
     });
 });

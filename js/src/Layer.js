@@ -20,7 +20,7 @@ Layer.prototype.linkTo = function(layer) {
     }
 };
 
-Layer.prototype.computeNeuronOutputs = function() {
+Layer.prototype.activate = function() {
     // Iterate thru the layer's neurons
     for (var neuronIndex = 0; neuronIndex < this.neurons.length; neuronIndex++) {
         // Compute the current neuron's output

@@ -31,5 +31,6 @@ function NeuralNetwork(numberOfInputNeurons, hiddenLayerProperties, numberOfOutp
 }
 
 NeuralNetwork.prototype.forwardPropagate = function() {
-
+    // Cascade activate the layers starting with the output layer
+    this.outputLayer.activate();
 };

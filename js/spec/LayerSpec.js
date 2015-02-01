@@ -57,7 +57,7 @@ describe("A layer", function() {
 
     it("can forward compute it's neurons' outputs", function() {
         // Compute the current layer's neurons' output
-        layer.computeNeuronOutputs();
+        layer.activate();
 
         // Check the output values
         expect(layer.neurons[0].output).toEqual(0.4950001666600003);
