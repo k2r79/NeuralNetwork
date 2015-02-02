@@ -1,16 +1,25 @@
 <html>
 	<head>
-		<script src="js/jquery-1.11.1.min.js"></script>
-        <script src="js/neural-network.js"></script>
+		<script src="js/lib/jquery-1.11.1.min.js"></script>
+
+        <script src="js/src/Synapse.js"></script>
+        <script src="js/src/Neuron.js"></script>
+        <script src="js/src/Layer.js"></script>
+        <script src="js/src/NeuralNetwork.js"></script>
+
 		<script>
             var neuralNetwork;
 
-			var PIXEL_SIZE = 10; //pixels
+			var PIXEL_SIZE = 40; //pixels
 
 			var GRID_WIDTH = 0;
 			var GRID_HEIGHT = 0; 
 
-			var OUTPUT_COUNT = 6;
+            var HIDDEN_LAYER_PROPERTIES = [15];
+			var OUTPUT_COUNT = 10;
+
+            var LEARNING_RATE = 0.30;
+            var VALIDATION_THRESHOLD = 0.50;
 
 			var pixels = [];
 
@@ -21,8 +30,7 @@
 				GRID_WIDTH = Math.floor(canvas.width/PIXEL_SIZE);
 				GRID_HEIGHT = Math.floor(canvas.height/PIXEL_SIZE);
 
-                neuralNetwork = new NeuralNetwork(GRID_WIDTH * GRID_HEIGHT, 10);
-                neuralNetwork.initialize();
+                neuralNetwork = new NeuralNetwork(GRID_WIDTH * GRID_HEIGHT, HIDDEN_LAYER_PROPERTIES, OUTPUT_COUNT, LEARNING_RATE);
 
 				resetCanvas();
 
@@ -59,9 +67,25 @@
 			}
 
 			function processClicked() {
-				processedNumbers = process();
+                process();
 
-				showProcessedNumbers(processedNumbers);
+                $("div#output-values").html("");
+
+                // Process the output layer neurons' values
+                var outputValues = [];
+                for (var neuronIndex = 0; neuronIndex < neuralNetwork.outputLayer.neurons.length; neuronIndex++) {
+                    var outputNeuron = neuralNetwork.outputLayer.neurons[neuronIndex];
+
+                    // Output the neuron's value
+                    $("div#output-values").append(neuronIndex + " : " + outputNeuron.output + "<br/>");
+
+                    // Apply the validation threshold
+                    if (outputNeuron.output >= VALIDATION_THRESHOLD) {
+                        outputValues.push(neuronIndex);
+                    }
+                }
+
+				showProcessedNumbers(outputValues);
 			}
 
 			function showProcessedNumbers(processedNumbers) {
@@ -76,13 +100,23 @@
 /* ------  */
 
 			function learn(number) {
-                neuralNetwork.learn(convertPixelsToLinearTable(), number);
+                for (var iteration = 0; iteration < 1000; iteration++) {
+                    neuralNetwork.forwardPropagate();
 
-                neuralNetwork.displayWeights();
+                    neuralNetwork.learn(number);
+                }
 			}
 
 			function process() {
-                return neuralNetwork.recognizeNumber(convertPixelsToLinearTable());
+                var linearPixelData = convertPixelsToLinearTable();
+
+                // Set the input layer output to the pixel values
+                for (var pixelIndex = 0; pixelIndex < linearPixelData.length; pixelIndex++) {
+                    neuralNetwork.inputLayer.neurons[pixelIndex].output = linearPixelData[pixelIndex] ? 1 : 0;
+                }
+
+                // Forward propagate in the neural network
+                neuralNetwork.forwardPropagate();
 			}
 
             function convertPixelsToLinearTable() {
@@ -176,6 +210,10 @@
 		<br/>
 		<input type="text" id="inputNumber"><input type="button" value="Learn" onclick="learnClicked()"/><br/>
 		<input type="text" id="outputNumber"><input type="button" value="Process" onclick="processClicked()"/><br/>
+        <br/>
+        <br/>
+        <h4>Output values</h4>
+        <div id="output-values"></div>
 	</div>
 </body>
 </html>
