@@ -1,6 +1,6 @@
 describe("A neural network", function() {
 
-    var neuralNetwork = new NeuralNetwork(3, [4], 2);
+    var neuralNetwork = new NeuralNetwork(3, [4], 2, 0.05);
 
     it("can forward propagate", function() {
         // Feed input values
@@ -52,5 +52,21 @@ describe("A neural network", function() {
         // Check the final output
         expect(neuralNetwork.outputLayer.neurons[0].output).toEqual(0.14161325249117482);
         expect(neuralNetwork.outputLayer.neurons[1].output).toEqual(0.47253007169626);
+    });
+
+    it ("can back propagate", function() {
+        // Forward propagate in the neural network
+        neuralNetwork.forwardPropagate();
+
+        // Install a spy on the neurons for learning
+        spyOn(neuralNetwork.outputLayer.neurons[0], "learn");
+        spyOn(neuralNetwork.outputLayer.neurons[1], "learn");
+
+        // Learn the number 4
+        neuralNetwork.learn(1);
+
+        // Check that the learning has been initiated
+        expect(neuralNetwork.outputLayer.neurons[0].learn).toHaveBeenCalledWith(0, 0.05);
+        expect(neuralNetwork.outputLayer.neurons[1].learn).toHaveBeenCalledWith(1, 0.05);
     });
 });

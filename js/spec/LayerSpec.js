@@ -61,7 +61,7 @@ describe("A layer", function() {
         }
     });
 
-    it("can forward compute it's neurons' outputs", function() {
+    it("can forward propagate", function() {
         // Compute the current layer's neurons' output
         layer.activate();
 

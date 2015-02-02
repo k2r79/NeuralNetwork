@@ -1,4 +1,4 @@
-function NeuralNetwork(numberOfInputNeurons, hiddenLayerProperties, numberOfOutputNeurons) {
+function NeuralNetwork(numberOfInputNeurons, hiddenLayerProperties, numberOfOutputNeurons, learningRate) {
     // Creating the input layer
     this.inputLayer = new Layer(numberOfInputNeurons);
 
@@ -28,9 +28,26 @@ function NeuralNetwork(numberOfInputNeurons, hiddenLayerProperties, numberOfOutp
         // Linking to the input layer if no hidden layers are declared
         this.outputLayer.linkTo(this.inputLayer);
     }
+
+    // Setting the learning rate
+    this.learningRate = learningRate;
 }
 
 NeuralNetwork.prototype.forwardPropagate = function() {
     // Cascade activate the layers starting with the output layer
     this.outputLayer.activate();
+};
+
+NeuralNetwork.prototype.learn = function(number) {
+    // Iterate thru the output layer's neurons
+    for (var neuronIndex = 0; neuronIndex < this.outputLayer.neurons.length; neuronIndex++) {
+        var outputNeuron = this.outputLayer.neurons[neuronIndex];
+
+        // Check if the output corresponds to the taught number
+        if (neuronIndex == number) {
+            outputNeuron.learn(1, this.learningRate);
+        } else {
+            outputNeuron.learn(0, this.learningRate);
+        }
+    }
 };
