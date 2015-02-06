@@ -158,8 +158,6 @@ describe("A neuron", function() {
         expect(previousNeurons[1].learn).toHaveBeenCalled();
         expect(previousNeurons[2].learn).toHaveBeenCalled();
 
-        console.log(neuron);
-
         // Check the neuron's error gradient
         expect(neuron.errorGradient).toEqual(-0.004066061794006348);
 

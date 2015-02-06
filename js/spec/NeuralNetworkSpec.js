@@ -1,8 +1,10 @@
 describe("A neural network", function() {
 
-    var neuralNetwork = new NeuralNetwork(3, [4], 2, 0.05);
+    var neuralNetwork;
 
-    it("can forward propagate", function() {
+    beforeEach(function() {
+        neuralNetwork = new NeuralNetwork(3, [4], 2, 0.05);
+
         // Feed input values
         neuralNetwork.inputLayer.neurons[0].output = 1;
         neuralNetwork.inputLayer.neurons[1].output = 0;
@@ -45,7 +47,9 @@ describe("A neural network", function() {
         neuralNetwork.outputLayer.neurons[1].leftSynapses[1].weight = 0.32;
         neuralNetwork.outputLayer.neurons[1].leftSynapses[2].weight = 0.31;
         neuralNetwork.outputLayer.neurons[1].leftSynapses[3].weight = 0.29;
+    });
 
+    it("can forward propagate", function() {
         // Forward propagate
         neuralNetwork.forwardPropagate();
 
@@ -54,7 +58,7 @@ describe("A neural network", function() {
         expect(neuralNetwork.outputLayer.neurons[1].output).toEqual(0.6260072063983385);
     });
 
-    it ("can back propagate", function() {
+    it("can back propagate", function() {
         // Forward propagate in the neural network
         neuralNetwork.forwardPropagate();
 
@@ -62,11 +66,22 @@ describe("A neural network", function() {
         spyOn(neuralNetwork.outputLayer.neurons[0], "learn");
         spyOn(neuralNetwork.outputLayer.neurons[1], "learn");
 
-        // Learn the number 4
+        // Learn the number 1
         neuralNetwork.learn(1);
 
         // Check that the learning has been initiated
         expect(neuralNetwork.outputLayer.neurons[0].learn).toHaveBeenCalledWith(0, 0.05);
         expect(neuralNetwork.outputLayer.neurons[1].learn).toHaveBeenCalledWith(1, 0.05);
+    });
+
+    it("can compute the average error", function() {
+        // Forward propagate in the neural network
+        neuralNetwork.forwardPropagate();
+
+        // Learn the number 1
+        neuralNetwork.learn(1);
+
+        // Check the mean squared error value
+        expect(neuralNetwork.averageError).toEqual(0.13071236447362072);
     });
 });
