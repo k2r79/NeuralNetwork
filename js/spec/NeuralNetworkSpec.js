@@ -9,10 +9,10 @@ describe("A neural network", function() {
         neuralNetwork.inputLayer.neurons[2].output = 1;
 
         // Setting the hidden layers' neurons' biases
-        neuralNetwork.hiddenLayers[0].neurons[0].bias = 0.23;
-        neuralNetwork.hiddenLayers[0].neurons[1].bias = 0.05;
-        neuralNetwork.hiddenLayers[0].neurons[2].bias = 0.74;
-        neuralNetwork.hiddenLayers[0].neurons[3].bias = 0.32;
+        neuralNetwork.hiddenLayers[0].neurons[0].threshold = 0.23;
+        neuralNetwork.hiddenLayers[0].neurons[1].threshold = 0.05;
+        neuralNetwork.hiddenLayers[0].neurons[2].threshold = 0.74;
+        neuralNetwork.hiddenLayers[0].neurons[3].threshold = 0.32;
 
         // Setting the hidden layers' neurons' synapses' weights
         neuralNetwork.hiddenLayers[0].neurons[0].leftSynapses[0].weight = 0.45;
@@ -32,8 +32,8 @@ describe("A neural network", function() {
         neuralNetwork.hiddenLayers[0].neurons[3].leftSynapses[2].weight = 0.34;
 
         // Setting the output layers' neurons' biases
-        neuralNetwork.outputLayer.neurons[0].bias = 0.64;
-        neuralNetwork.outputLayer.neurons[1].bias = 0.15;
+        neuralNetwork.outputLayer.neurons[0].threshold = 0.64;
+        neuralNetwork.outputLayer.neurons[1].threshold = 0.15;
 
         // Setting the output layers' neurons' synapses' weights
         neuralNetwork.outputLayer.neurons[0].leftSynapses[0].weight = 0.88;
@@ -50,8 +50,8 @@ describe("A neural network", function() {
         neuralNetwork.forwardPropagate();
 
         // Check the final output
-        expect(neuralNetwork.outputLayer.neurons[0].output).toEqual(0.14161325249117482);
-        expect(neuralNetwork.outputLayer.neurons[1].output).toEqual(0.47253007169626);
+        expect(neuralNetwork.outputLayer.neurons[0].output).toEqual(0.6354175225489029);
+        expect(neuralNetwork.outputLayer.neurons[1].output).toEqual(0.6260072063983385);
     });
 
     it ("can back propagate", function() {

@@ -1,6 +1,6 @@
 function Neuron() {
     this.output = null;
-    this.bias = Math.random();
+    this.threshold = Math.random();
     this.leftSynapses = [];
     this.rightSynapses = [];
     this.errorGradient = null;
@@ -13,17 +13,17 @@ Neuron.prototype.activate = function() {
     }
 
     // Sigmoid function
-    var z = 0;
+    var activation = 0;
     for (var synapseIndex = 0; synapseIndex < this.leftSynapses.length; synapseIndex++) {
         // Activate the previous neuron
         this.leftSynapses[synapseIndex].leftNeuron.activate();
 
         // Sum(w(x) * o(x) - b)
-        z += this.leftSynapses[synapseIndex].weight * this.leftSynapses[synapseIndex].leftNeuron.output - this.bias;
+        activation += this.leftSynapses[synapseIndex].weight * this.leftSynapses[synapseIndex].leftNeuron.output;
     }
 
     // Sigmoid function
-    this.output = 1 / (1 + Math.exp(-z));
+    this.output = 1 / (1 + Math.exp(-(activation - this.threshold)));
 };
 
 Neuron.prototype.learn = function(desiredValue, learningRate) {

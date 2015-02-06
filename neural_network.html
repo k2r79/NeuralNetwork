@@ -1,6 +1,7 @@
 <html>
 	<head>
 		<script src="js/lib/jquery-1.11.1.min.js"></script>
+        <script src="js/lib/chartjs/Chart.min.js"></script>
 
         <script src="js/src/Synapse.js"></script>
         <script src="js/src/Neuron.js"></script>
@@ -9,13 +10,14 @@
 
 		<script>
             var neuralNetwork;
+            var radarChart;
 
-			var PIXEL_SIZE = 40; //pixels
+			var PIXEL_SIZE = 30; //pixels
 
 			var GRID_WIDTH = 0;
 			var GRID_HEIGHT = 0; 
 
-            var HIDDEN_LAYER_PROPERTIES = [15];
+            var HIDDEN_LAYER_PROPERTIES = [6];
 			var OUTPUT_COUNT = 10;
 
             var LEARNING_RATE = 0.30;
@@ -29,6 +31,8 @@
 				var canvas = document.getElementById("canvas");
 				GRID_WIDTH = Math.floor(canvas.width/PIXEL_SIZE);
 				GRID_HEIGHT = Math.floor(canvas.height/PIXEL_SIZE);
+
+                initializeRadarChart();
 
                 neuralNetwork = new NeuralNetwork(GRID_WIDTH * GRID_HEIGHT, HIDDEN_LAYER_PROPERTIES, OUTPUT_COUNT, LEARNING_RATE);
 
@@ -60,6 +64,33 @@
 				})
 			}
 
+            function initializeRadarChart() {
+                var radarChartContext = document.getElementById("radarChart").getContext("2d");
+
+                var data = {
+                    labels: [],
+                    datasets: [
+                        {
+                            label: "Neural Network Output",
+                            fillColor: "rgba(151,187,205,0.2)",
+                            strokeColor: "rgba(151,187,205,1)",
+                            pointColor: "rgba(151,187,205,1)",
+                            pointStrokeColor: "#fff",
+                            pointHighlightFill: "#fff",
+                            pointHighlightStroke: "rgba(151,187,205,1)",
+                            data: []
+                        }
+                    ]
+                };
+
+                for (var outputIndex = 0; outputIndex < OUTPUT_COUNT; outputIndex++) {
+                    data.labels.push("Chiffre " + outputIndex);
+                    data.datasets[0].data.push(0);
+                }
+
+                radarChart = new Chart(radarChartContext).Radar(data);
+            }
+
 			function learnClicked() {
 				var learnedNumber = parseInt($("#inputNumber").val());
 				learn(learnedNumber);
@@ -69,21 +100,22 @@
 			function processClicked() {
                 process();
 
-                $("div#output-values").html("");
-
                 // Process the output layer neurons' values
                 var outputValues = [];
                 for (var neuronIndex = 0; neuronIndex < neuralNetwork.outputLayer.neurons.length; neuronIndex++) {
                     var outputNeuron = neuralNetwork.outputLayer.neurons[neuronIndex];
 
                     // Output the neuron's value
-                    $("div#output-values").append(neuronIndex + " : " + outputNeuron.output + "<br/>");
+                    radarChart.datasets[0].points[neuronIndex].value = outputNeuron.output;
 
                     // Apply the validation threshold
                     if (outputNeuron.output >= VALIDATION_THRESHOLD) {
                         outputValues.push(neuronIndex);
                     }
                 }
+
+                // Refresh the Radar Chart
+                radarChart.update();
 
 				showProcessedNumbers(outputValues);
 			}
@@ -100,11 +132,11 @@
 /* ------  */
 
 			function learn(number) {
-                for (var iteration = 0; iteration < 1000; iteration++) {
+                //for (var iteration = 0; iteration < 1500 && neuralNetwork.outputLayer.neurons[number].output < VALIDATION_THRESHOLD; iteration++) {
                     neuralNetwork.forwardPropagate();
 
                     neuralNetwork.learn(number);
-                }
+                //}
 			}
 
 			function process() {
@@ -211,9 +243,7 @@
 		<input type="text" id="inputNumber"><input type="button" value="Learn" onclick="learnClicked()"/><br/>
 		<input type="text" id="outputNumber"><input type="button" value="Process" onclick="processClicked()"/><br/>
         <br/>
-        <br/>
-        <h4>Output values</h4>
-        <div id="output-values"></div>
+        <canvas id="radarChart" width="400" height="400"></canvas>
 	</div>
 </body>
 </html>

@@ -17,10 +17,10 @@ describe("A layer", function() {
         layer.linkTo(previousLayer);
 
         // Setting the current layers' neurons' biases
-        layer.neurons[0].bias = 0.23;
-        layer.neurons[1].bias = 0.05;
-        layer.neurons[2].bias = 0.74;
-        layer.neurons[3].bias = 0.32;
+        layer.neurons[0].threshold = 0.23;
+        layer.neurons[1].threshold = 0.05;
+        layer.neurons[2].threshold = 0.74;
+        layer.neurons[3].threshold = 0.32;
 
         // Setting the current layers' neurons' synapses' weights
         layer.neurons[0].leftSynapses[0].weight = 0.45;
@@ -66,9 +66,9 @@ describe("A layer", function() {
         layer.activate();
 
         // Check the output values
-        expect(layer.neurons[0].output).toEqual(0.4950001666600003);
-        expect(layer.neurons[1].output).toEqual(0.7005671424739729);
-        expect(layer.neurons[2].output).toEqual(0.20751005855963564);
-        expect(layer.neurons[3].output).toEqual(0.3705168880326052);
+        expect(layer.neurons[0].output).toEqual(0.6082590307465144);
+        expect(layer.neurons[1].output).toEqual(0.7211151780228631);
+        expect(layer.neurons[2].output).toEqual(0.5349429451582145);
+        expect(layer.neurons[3].output).toEqual(0.5274723043445937);
     });
 });

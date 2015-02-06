@@ -51,8 +51,8 @@ describe("A neuron", function() {
         ];
 
         // Setting the next neurons' biases
-        nextNeurons[0].bias = 0.2567433442454785;
-        nextNeurons[1].bias = 0.894932294730097;
+        nextNeurons[0].threshold = 0.2567433442454785;
+        nextNeurons[1].threshold = 0.894932294730097;
 
         // Create the right synapses with the previous layer neurons
         var rightSynapses = [
@@ -71,8 +71,8 @@ describe("A neuron", function() {
         nextNeurons[0].leftSynapses.push(rightSynapses[0]);
         nextNeurons[1].leftSynapses.push(rightSynapses[1]);
 
-        // Setting the neuron's bias
-        neuron.bias = 0.10;
+        // Setting the neuron's threshold
+        neuron.threshold = 0.10;
     });
 
     it("is a sigmoid function", function() {
@@ -80,7 +80,7 @@ describe("A neuron", function() {
         neuron.activate();
 
         // Check values
-        expect(neuron.output).toEqual(0.5106234010049637);
+        expect(neuron.output).toEqual(0.5603296426885533);
     });
 
     it("can be an input layer neuron", function() {
@@ -122,18 +122,18 @@ describe("A neuron", function() {
         neuron.activate();
 
         // Check the activation and output of the neuron
-        expect(neuron.output).toEqual(0.5106234010049637);
+        expect(neuron.output).toEqual(0.5603296426885533);
 
         // Make the neuron learn
         neuron.learn(desiredValue, learningRate);
 
         // Check the neuron's error gradient
-        expect(neuron.errorGradient).toEqual(0.12228892034574042);
+        expect(neuron.errorGradient).toEqual(0.10831733617082856);
 
         // Check the new left synapses' weights
-        expect(neuron.leftSynapses[0].weight).toEqual(0.5307948779822473);
-        expect(neuron.leftSynapses[1].weight).toEqual(0.1224457784069148);
-        expect(neuron.leftSynapses[2].weight).toEqual(0.9414674670441489);
+        expect(neuron.leftSynapses[0].weight).toEqual(0.5307040626851104);
+        expect(neuron.leftSynapses[1].weight).toEqual(0.12216634672341657);
+        expect(neuron.leftSynapses[2].weight).toEqual(0.9412998080340499);
     });
 
     it("can learn", function() {
@@ -142,7 +142,7 @@ describe("A neuron", function() {
         nextNeurons[1].activate();
 
         // Check the activation and output of the neuron
-        expect(neuron.output).toEqual(0.5106234010049637);
+        expect(neuron.output).toEqual(0.5603296426885533);
 
         // Install a learning spy on the previous neurons
         spyOn(previousNeurons[0], "learn");
@@ -161,11 +161,11 @@ describe("A neuron", function() {
         console.log(neuron);
 
         // Check the neuron's error gradient
-        expect(neuron.errorGradient).toEqual(-0.0035802431907934586);
+        expect(neuron.errorGradient).toEqual(-0.004066061794006348);
 
         // Check the new left synapses' weights
-        expect(neuron.leftSynapses[0].weight).toEqual(0.5297809176901335);
-        expect(neuron.leftSynapses[1].weight).toEqual(0.11932590058502579);
-        expect(neuron.leftSynapses[2].weight).toEqual(0.9395955403510154);
+        expect(neuron.leftSynapses[0].weight).toEqual(0.5297777216295553);
+        expect(neuron.leftSynapses[1].weight).toEqual(0.11931606655247794);
+        expect(neuron.leftSynapses[2].weight).toEqual(0.9395896399314868);
     });
 });
