@@ -14,12 +14,12 @@
             var errorChart;
             var iterations = 0;
 
-			var PIXEL_SIZE = 30; //pixels
+			var PIXEL_SIZE = 25; //pixels
 
 			var GRID_WIDTH = 0;
 			var GRID_HEIGHT = 0; 
 
-            var HIDDEN_LAYER_PROPERTIES = [6];
+            var HIDDEN_LAYER_PROPERTIES = [8];
 			var OUTPUT_COUNT = 10;
 
             var LEARNING_RATE = 0.30;
@@ -240,10 +240,11 @@
       			drawPixels();
       		}
 
-      		function resetPixels() {      				
-			for(var x = 0; x < GRID_WIDTH; x++) {
-				pixels[x] = [];
-      			for(var y = 0; y < GRID_HEIGHT; y++) {						
+      		function resetPixels() {
+                pixels = [];
+                for(var x = 0; x < GRID_WIDTH; x++) {
+                    pixels[x] = [];
+                    for(var y = 0; y < GRID_HEIGHT; y++) {
 						pixels[x][y] = false;
 					}
 				}
@@ -267,21 +268,53 @@
 			}
 
 		</script>
-	</head>
-	<body onLoad="init();">
-	<canvas id="canvas" width="300" height="400" style="float:left">
-		alternate content
-	</canvas>
-	<div style="margin-left:50px;float:left">
-		<input type="button" value="Reset canvas" onclick="resetCanvas()"/><br/>
-		<br/>
-		<input type="text" id="inputNumber"><input type="button" value="Learn" onclick="learnClicked()"/><br/>
-		<input type="text" id="outputNumber"><input type="button" value="Process" onclick="processClicked()"/><br/>
-        <br/>
-	</div>
-    <div>
-        <canvas id="errorChart" style="float: right;" width="800" height="400"></canvas>
-        <canvas id="radarChart" style="float: right;" width="400" height="400"></canvas>
-    </div>
-</body>
+    </head>
+    <body onLoad="init();">
+        <canvas id="canvas" width="300" height="400" style="float:left">
+            alternate content
+        </canvas>
+        <div style="margin-left:50px;float:left">
+            <input type="button" value="Reset canvas" onclick="resetCanvas()"/><br/>
+            <br/>
+            <input type="text" id="inputNumber"><input type="button" value="Learn" onclick="learnClicked()"/><br/>
+            <input type="text" id="outputNumber"><input type="button" value="Process" onclick="processClicked()"/><br/>
+            <br/>
+            <div id="saved-numbers">
+                <input type="button" value="0" />
+                <input type="button" value="1" />
+                <input type="button" value="2" />
+                <input type="button" value="3" />
+                <input type="button" value="4" />
+                <input type="button" value="5" />
+                <input type="button" value="6" />
+                <input type="button" value="7" />
+                <input type="button" value="8" />
+                <input type="button" value="9" />
+            </div>
+        </div>
+        <div>
+            <canvas id="errorChart" style="float: right;" width="800" height="400"></canvas>
+            <canvas id="radarChart" style="float: right;" width="400" height="400"></canvas>
+        </div>
+    </body>
+    <script>
+        $("div#saved-numbers input").click(function writeSavedNumber() {
+            var number = $(this).val();
+
+            // If the number doesn't exist
+            if (!localStorage.getItem("number-" + number)) {
+                // Then save it
+                localStorage.setItem("number-" + number, JSON.stringify(pixels));
+            }
+
+            // Reset the canvas
+            resetCanvas();
+
+            // Set the pixels to the saved number
+            pixels = JSON.parse(localStorage.getItem("number-" + number));
+
+            // Draw the saved number
+            drawPixels();
+        });
+    </script>
 </html>
