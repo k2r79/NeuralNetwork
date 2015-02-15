@@ -19,7 +19,7 @@
 			var GRID_WIDTH = 0;
 			var GRID_HEIGHT = 0; 
 
-            var HIDDEN_LAYER_PROPERTIES = [8];
+            var HIDDEN_LAYER_PROPERTIES = [5];
 			var OUTPUT_COUNT = 10;
 
             var LEARNING_RATE = 0.30;
@@ -121,7 +121,7 @@
 
 			function learnClicked() {
 				var learnedNumber = parseInt($("#inputNumber").val());
-				learn(learnedNumber);
+				learn(learnedNumber, true);
 				processClicked();
 			}
 
@@ -159,16 +159,18 @@
 
 /* ------  */
 
-			function learn(number) {
+			function learn(number, showGraphics) {
                 // Forward propagate
                 neuralNetwork.forwardPropagate();
 
                 // Teach the number
                 neuralNetwork.learn(number);
 
-                // Add the error value to the error chart
-                errorChart.addData([neuralNetwork.averageError], "");
-                errorChart.update();
+                if (showGraphics) {
+                    // Add the error value to the error chart
+                    errorChart.addData([neuralNetwork.meanSquarredError], "");
+                    errorChart.update();
+                }
 
                 // Increment the learning iterations
                 iterations++;
@@ -291,6 +293,8 @@
                 <input type="button" value="8" />
                 <input type="button" value="9" />
             </div>
+            <br/>
+            <input type="button" value="Auto-Learn" onclick="autoLearn()"/>
         </div>
         <div>
             <canvas id="errorChart" style="float: right;" width="800" height="400"></canvas>
@@ -307,6 +311,11 @@
                 localStorage.setItem("number-" + number, JSON.stringify(pixels));
             }
 
+            // Draw the number
+            drawNumber(number);
+        });
+
+        function drawNumber(number) {
             // Reset the canvas
             resetCanvas();
 
@@ -315,6 +324,26 @@
 
             // Draw the saved number
             drawPixels();
-        });
+        }
+
+        function autoLearn() {
+            // Run learn for each number multiple times
+            for (var iteration = 0; iteration < 10; iteration++) {
+                console.log("Iteration : " + (iteration + 1));
+
+                // For each number
+                for (var number = 0; number < neuralNetwork.outputLayer.neurons.length; number++) {
+                    // Draw the number
+                    drawNumber(number);
+
+                    do {
+                        // Teach the number
+                        learn(number, false);
+
+                        // Until the average error small enough
+                    } while (neuralNetwork.meanSquarredError > 0.3);
+                }
+            }
+        }
     </script>
 </html>

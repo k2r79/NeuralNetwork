@@ -62,19 +62,26 @@ describe("A neural network", function() {
         // Forward propagate in the neural network
         neuralNetwork.forwardPropagate();
 
-        // Install a spy on the neurons for learning
-        spyOn(neuralNetwork.outputLayer.neurons[0], "learn");
-        spyOn(neuralNetwork.outputLayer.neurons[1], "learn");
+        // Install a spy on the neurons for computing the error gradient
+        spyOn(neuralNetwork.outputLayer.neurons[0], "computeErrorGradient");
+        spyOn(neuralNetwork.outputLayer.neurons[1], "computeErrorGradient");
+
+        // Install a spy on the neurons for updating the weights
+        spyOn(neuralNetwork.outputLayer.neurons[0], "updateWeights");
+        spyOn(neuralNetwork.outputLayer.neurons[1], "updateWeights");
 
         // Learn the number 1
         neuralNetwork.learn(1);
 
         // Check that the learning has been initiated
-        expect(neuralNetwork.outputLayer.neurons[0].learn).toHaveBeenCalledWith(0, 0.05);
-        expect(neuralNetwork.outputLayer.neurons[1].learn).toHaveBeenCalledWith(1, 0.05);
+        expect(neuralNetwork.outputLayer.neurons[0].computeErrorGradient).toHaveBeenCalledWith(0, 0.05);
+        expect(neuralNetwork.outputLayer.neurons[1].computeErrorGradient).toHaveBeenCalledWith(1, 0.05);
+
+        expect(neuralNetwork.outputLayer.neurons[0].updateWeights).toHaveBeenCalledWith(0, 0.05);
+        expect(neuralNetwork.outputLayer.neurons[1].updateWeights).toHaveBeenCalledWith(1, 0.05);
     });
 
-    it("can compute the average error", function() {
+    it("can compute the mean squared error", function() {
         // Forward propagate in the neural network
         neuralNetwork.forwardPropagate();
 
@@ -82,6 +89,6 @@ describe("A neural network", function() {
         neuralNetwork.learn(1);
 
         // Check the mean squared error value
-        expect(neuralNetwork.averageError).toEqual(0.13071236447362072);
+        expect(neuralNetwork.meanSquarredError).toEqual(0.27181301881408026);
     });
 });
