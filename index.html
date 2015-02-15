@@ -341,7 +341,7 @@
                         learn(number, false);
 
                         // Until the average error small enough
-                    } while (neuralNetwork.meanSquarredError > 0.3);
+                    } while (neuralNetwork.meanSquarredError < VALIDATION_THRESHOLD);
                 }
             }
         }

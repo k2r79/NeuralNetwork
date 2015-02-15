@@ -73,6 +73,9 @@ describe("A neural network", function() {
         // Learn the number 1
         neuralNetwork.learn(1);
 
+        // Check that the learning iterations are incremented
+        expect(neuralNetwork.learningIterations).toEqual(1);
+
         // Check that the learning has been initiated
         expect(neuralNetwork.outputLayer.neurons[0].computeErrorGradient).toHaveBeenCalledWith(0, 0.05);
         expect(neuralNetwork.outputLayer.neurons[1].computeErrorGradient).toHaveBeenCalledWith(1, 0.05);
@@ -89,6 +92,6 @@ describe("A neural network", function() {
         neuralNetwork.learn(1);
 
         // Check the mean squared error value
-        expect(neuralNetwork.meanSquarredError).toEqual(0.27181301881408026);
+        expect(neuralNetwork.meanSquarredError).toEqual(0.13590650940704013);
     });
 });
