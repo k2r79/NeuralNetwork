@@ -53,9 +53,15 @@ describe("A neural network", function() {
         // Forward propagate
         neuralNetwork.forwardPropagate();
 
+        // Check the hidden layer
+        expect(neuralNetwork.hiddenLayers[0].neurons[0].output).toEqual(0.7109495026250039);
+        expect(neuralNetwork.hiddenLayers[0].neurons[1].output).toEqual(0.7407748991821539);
+        expect(neuralNetwork.hiddenLayers[0].neurons[2].output).toEqual(0.8347951298093854);
+        expect(neuralNetwork.hiddenLayers[0].neurons[3].output).toEqual(0.679178699175393);
+
         // Check the final output
-        expect(neuralNetwork.outputLayer.neurons[0].output).toEqual(0.6354175225489029);
-        expect(neuralNetwork.outputLayer.neurons[1].output).toEqual(0.6260072063983385);
+        expect(neuralNetwork.outputLayer.neurons[0].output).toEqual(0.9034296065352526);
+        expect(neuralNetwork.outputLayer.neurons[1].output).toEqual(0.7266867013739429);
     });
 
     it("can back propagate", function() {
@@ -92,6 +98,6 @@ describe("A neural network", function() {
         neuralNetwork.learn(1);
 
         // Check the mean squared error value
-        expect(neuralNetwork.meanSquarredError).toEqual(0.13590650940704013);
+        expect(neuralNetwork.meanSquarredError).toEqual(0.22272130329257442);
     });
 });

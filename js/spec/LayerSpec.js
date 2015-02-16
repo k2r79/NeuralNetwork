@@ -66,9 +66,9 @@ describe("A layer", function() {
         layer.activate();
 
         // Check the output values
-        expect(layer.neurons[0].output).toEqual(0.6082590307465144);
-        expect(layer.neurons[1].output).toEqual(0.7211151780228631);
-        expect(layer.neurons[2].output).toEqual(0.5349429451582145);
-        expect(layer.neurons[3].output).toEqual(0.5274723043445937);
+        expect(layer.neurons[0].output).toEqual(0.7109495026250039);
+        expect(layer.neurons[1].output).toEqual(0.7407748991821539);
+        expect(layer.neurons[2].output).toEqual(0.8347951298093854);
+        expect(layer.neurons[3].output).toEqual(0.679178699175393);
     });
 });

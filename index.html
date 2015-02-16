@@ -59,7 +59,7 @@
 						var mousePoint = mouseCanvasPosition(e);
 						var pixelIndex = pixelIndexAtPoint(e);
 						if(pixelIndex != mousePixelIndex) {
-							setPixelValueAtPoint(mousePoint, true);
+							setPixelValueAtPoint(mousePoint, 1);
 							drawPixels();	
 							mousePixelIndex = pixelIndex;												
 						}
@@ -181,7 +181,7 @@
 
                 // Set the input layer output to the pixel values
                 for (var pixelIndex = 0; pixelIndex < linearPixelData.length; pixelIndex++) {
-                    neuralNetwork.inputLayer.neurons[pixelIndex].output = linearPixelData[pixelIndex] ? 1 : 0;
+                    neuralNetwork.inputLayer.neurons[pixelIndex].output = linearPixelData[pixelIndex];
                 }
 
                 // Forward propagate in the neural network
@@ -222,18 +222,27 @@
       		}
 
       		function togglePixelAtPoint(point) {
-      			var x = Math.floor(point.x/PIXEL_SIZE);
-      			var y = Math.floor(point.y/PIXEL_SIZE);
-      			if(x < GRID_WIDTH && y < GRID_HEIGHT) {
-      				pixels[x][y] = !pixels[x][y];
-      			}
+                setPixelValueAtPoint(point, 1);
       		}
 
       		function setPixelValueAtPoint(point, value) {
       			var x = Math.floor(point.x/PIXEL_SIZE);
       			var y = Math.floor(point.y/PIXEL_SIZE);
       			if(x < GRID_WIDTH && y < GRID_HEIGHT) {
-      				pixels[x][y] = value;      				
+                    for (var xOffset = -1; xOffset <= 1; xOffset++) {
+                        for (var yOffset = -1; yOffset <= 1; yOffset++) {
+                            var newX = x + xOffset;
+                            var newY = y + yOffset;
+
+                            if (xOffset == 0 && yOffset == 0) {
+                                pixels[x][y] = value;
+                            } else if (newX >= 0 && newX < GRID_WIDTH
+                                && newY >= 0 && newY < GRID_HEIGHT
+                                && pixels[newX][newY] != 1) {
+                                pixels[newX][newY] = 0.5;
+                            }
+                        }
+                    }
       			}
       		}
 
@@ -247,7 +256,7 @@
                 for(var x = 0; x < GRID_WIDTH; x++) {
                     pixels[x] = [];
                     for(var y = 0; y < GRID_HEIGHT; y++) {
-						pixels[x][y] = false;
+						pixels[x][y] = 0;
 					}
 				}
       		}
@@ -260,7 +269,15 @@
 					for(var x = 0; x < GRID_WIDTH; x++) {
 						context.beginPath();
 						context.rect(x*PIXEL_SIZE, y*PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE);
-						context.fillStyle = pixels[x][y] ? '#2D2' : '#555';
+
+                        if (pixels[x][y] == 1) {
+                            context.fillStyle = '#2D2';
+                        } else if (pixels[x][y] == 0.5) {
+                            context.fillStyle = '#148514';
+                        } else {
+                            context.fillStyle = '#555'
+                        }
+
 						context.fill();
 						context.lineWidth = 1;
 						context.strokeStyle = '#000';

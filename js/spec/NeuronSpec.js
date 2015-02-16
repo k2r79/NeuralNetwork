@@ -80,7 +80,7 @@ describe("A neuron", function() {
         neuron.activate();
 
         // Check values
-        expect(neuron.output).toEqual(0.5603296426885533);
+        expect(neuron.output).toEqual(0.6088545692109504);
     });
 
     it("can be an input layer neuron", function() {
@@ -125,7 +125,7 @@ describe("A neuron", function() {
         neuron.computeErrorGradient(desiredValue, learningRate);
 
         // Check the neuron's error gradient
-        expect(neuron.errorGradient).toEqual(0.10831733617082856);
+        expect(neuron.errorGradient).toEqual(0.09315155140160905);
     });
 
     it("can learn as an output neuron", function() {
@@ -144,9 +144,9 @@ describe("A neuron", function() {
         neuron.updateWeights(desiredValue, learningRate);
 
         // Check the new left synapses' weights
-        expect(neuron.leftSynapses[0].weight).toEqual(0.5307040626851104);
-        expect(neuron.leftSynapses[1].weight).toEqual(0.12216634672341657);
-        expect(neuron.leftSynapses[2].weight).toEqual(0.9412998080340499);
+        expect(neuron.leftSynapses[0].weight).toEqual(0.5306054850841105);
+        expect(neuron.leftSynapses[1].weight).toEqual(0.12186303102803217);
+        expect(neuron.leftSynapses[2].weight).toEqual(0.9411178186168192);
     });
 
 
@@ -154,6 +154,9 @@ describe("A neuron", function() {
         // Activate the neurons
         nextNeurons[0].activate();
         nextNeurons[1].activate();
+
+        console.log(nextNeurons[0].output);
+        console.log(nextNeurons[1].output);
 
         // Install an error gradient computation spy on the previous neurons
         spyOn(previousNeurons[0], "computeErrorGradient");
@@ -170,7 +173,7 @@ describe("A neuron", function() {
         expect(previousNeurons[2].computeErrorGradient).toHaveBeenCalled();
 
         // Check the neuron's error gradient
-        expect(neuron.errorGradient).toEqual(-0.004344893364455857);
+        expect(neuron.errorGradient).toEqual(-0.02538029137503969);
     });
 
     it("can backpropagate it's weigth updating", function() {
@@ -198,8 +201,8 @@ describe("A neuron", function() {
         expect(previousNeurons[2].updateWeights).toHaveBeenCalled();
 
         // Check the new left synapses' weights
-        expect(neuron.leftSynapses[0].weight).toEqual(0.529943516386262);
-        expect(neuron.leftSynapses[1].weight).toEqual(0.11982620426542176);
-        expect(neuron.leftSynapses[2].weight).toEqual(0.939895722559253);
+        expect(neuron.leftSynapses[0].weight).toEqual(0.5296700562121246);
+        expect(neuron.leftSynapses[1].weight).toEqual(0.1189847883449984);
+        expect(neuron.leftSynapses[2].weight).toEqual(0.9393908730069991);
     });
 });

@@ -23,7 +23,7 @@ Neuron.prototype.activate = function() {
     }
 
     // Sigmoid function
-    this.output = 1 / (1 + Math.exp(-(activation - this.threshold)));
+    this.output = 1 / (1 + Math.exp(-activation - this.threshold));
 };
 
 Neuron.prototype.computeErrorGradient = function(desiredValue, learningRate) {
