@@ -45,7 +45,7 @@ NeuralNetwork.prototype.forwardPropagate = function() {
 };
 
 NeuralNetwork.prototype.learn = function(number) {
-    // Put the average error to 0
+    // Put the mean squarred error to 0
     this.meanSquarredError = 0;
 
     // Iterate thru the output layer's neurons
@@ -67,12 +67,12 @@ NeuralNetwork.prototype.learn = function(number) {
         outputNeuron.computeErrorGradient(desiredOutput, this.learningRate);
 
         // Update the network's weights
-        outputNeuron.updateWeights(desiredOutput, this.learningRate);
+        outputNeuron.updateWeightsAndThresholds(desiredOutput, this.learningRate);
     }
 
     // Increment the learning iteration counter
     this.learningIterations++;
 
     // Finish the average error computation
-    this.meanSquarredError *= 1 / (2 * this.learningIterations * this.outputLayer.neurons.length);
+    this.meanSquarredError *= 0.5;
 };

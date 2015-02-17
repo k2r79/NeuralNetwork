@@ -1,6 +1,6 @@
 function Neuron() {
     this.output = null;
-    this.threshold = Math.random();
+    this.threshold = 0.50;
     this.leftSynapses = [];
     this.rightSynapses = [];
     this.errorGradient = null;
@@ -18,7 +18,7 @@ Neuron.prototype.activate = function() {
         // Activate the previous neuron
         this.leftSynapses[synapseIndex].leftNeuron.activate();
 
-        // Sum(w(x) * o(x) - b)
+        // Sum(w(x) * o(x))
         activation += this.leftSynapses[synapseIndex].weight * this.leftSynapses[synapseIndex].leftNeuron.output;
     }
 
@@ -57,7 +57,10 @@ Neuron.prototype.computeErrorGradient = function(desiredValue, learningRate) {
     }
 };
 
-Neuron.prototype.updateWeights = function(desiredValue, learningRate) {
+Neuron.prototype.updateWeightsAndThresholds = function(desiredValue, learningRate) {
+    // Update the neuron's threshold
+    this.threshold += learningRate * this.errorGradient;
+
     // Iterate thru the previous neurons
     for (var synapseIndex = 0; synapseIndex < this.leftSynapses.length; synapseIndex++) {
         var leftSynapse = this.leftSynapses[synapseIndex];
@@ -66,6 +69,6 @@ Neuron.prototype.updateWeights = function(desiredValue, learningRate) {
         leftSynapse.weight += learningRate * leftSynapse.leftNeuron.output * this.errorGradient;
 
         // Order previous neuron to learn
-        leftSynapse.leftNeuron.updateWeights(null, learningRate);
+        leftSynapse.leftNeuron.updateWeightsAndThresholds(null, learningRate);
     }
 };

@@ -141,12 +141,15 @@ describe("A neuron", function() {
         neuron.computeErrorGradient(desiredValue, learningRate);
 
         // Make the neuron update it's left synapse's weights
-        neuron.updateWeights(desiredValue, learningRate);
+        neuron.updateWeightsAndThresholds(desiredValue, learningRate);
 
         // Check the new left synapses' weights
         expect(neuron.leftSynapses[0].weight).toEqual(0.5306054850841105);
         expect(neuron.leftSynapses[1].weight).toEqual(0.12186303102803217);
         expect(neuron.leftSynapses[2].weight).toEqual(0.9411178186168192);
+
+        // Check the new neuron threshold
+        expect(neuron.threshold).toEqual(0.10465757757008046);
     });
 
 
@@ -176,7 +179,7 @@ describe("A neuron", function() {
         expect(neuron.errorGradient).toEqual(-0.02538029137503969);
     });
 
-    it("can backpropagate it's weigth updating", function() {
+    it("can backpropagate it's weight and threshold updating", function() {
         // Activate the neurons
         nextNeurons[0].activate();
         nextNeurons[1].activate();
@@ -186,19 +189,19 @@ describe("A neuron", function() {
         nextNeurons[1].computeErrorGradient(1, learningRate);
 
         // Install a weight updating spy on the previous neurons
-        spyOn(previousNeurons[0], "updateWeights");
-        spyOn(previousNeurons[1], "updateWeights");
-        spyOn(previousNeurons[2], "updateWeights");
+        spyOn(previousNeurons[0], "updateWeightsAndThresholds");
+        spyOn(previousNeurons[1], "updateWeightsAndThresholds");
+        spyOn(previousNeurons[2], "updateWeightsAndThresholds");
 
         // Make the neuron update it's weights
-        nextNeurons[0].updateWeights(0, learningRate);
-        nextNeurons[1].updateWeights(1, learningRate);
+        nextNeurons[0].updateWeightsAndThresholds(0, learningRate);
+        nextNeurons[1].updateWeightsAndThresholds(1, learningRate);
 
 
         // Check the cascading learn
-        expect(previousNeurons[0].updateWeights).toHaveBeenCalled();
-        expect(previousNeurons[1].updateWeights).toHaveBeenCalled();
-        expect(previousNeurons[2].updateWeights).toHaveBeenCalled();
+        expect(previousNeurons[0].updateWeightsAndThresholds).toHaveBeenCalled();
+        expect(previousNeurons[1].updateWeightsAndThresholds).toHaveBeenCalled();
+        expect(previousNeurons[2].updateWeightsAndThresholds).toHaveBeenCalled();
 
         // Check the new left synapses' weights
         expect(neuron.leftSynapses[0].weight).toEqual(0.5296700562121246);

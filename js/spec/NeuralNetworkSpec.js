@@ -73,8 +73,8 @@ describe("A neural network", function() {
         spyOn(neuralNetwork.outputLayer.neurons[1], "computeErrorGradient");
 
         // Install a spy on the neurons for updating the weights
-        spyOn(neuralNetwork.outputLayer.neurons[0], "updateWeights");
-        spyOn(neuralNetwork.outputLayer.neurons[1], "updateWeights");
+        spyOn(neuralNetwork.outputLayer.neurons[0], "updateWeightsAndThresholds");
+        spyOn(neuralNetwork.outputLayer.neurons[1], "updateWeightsAndThresholds");
 
         // Learn the number 1
         neuralNetwork.learn(1);
@@ -86,8 +86,8 @@ describe("A neural network", function() {
         expect(neuralNetwork.outputLayer.neurons[0].computeErrorGradient).toHaveBeenCalledWith(0, 0.05);
         expect(neuralNetwork.outputLayer.neurons[1].computeErrorGradient).toHaveBeenCalledWith(1, 0.05);
 
-        expect(neuralNetwork.outputLayer.neurons[0].updateWeights).toHaveBeenCalledWith(0, 0.05);
-        expect(neuralNetwork.outputLayer.neurons[1].updateWeights).toHaveBeenCalledWith(1, 0.05);
+        expect(neuralNetwork.outputLayer.neurons[0].updateWeightsAndThresholds).toHaveBeenCalledWith(0, 0.05);
+        expect(neuralNetwork.outputLayer.neurons[1].updateWeightsAndThresholds).toHaveBeenCalledWith(1, 0.05);
     });
 
     it("can compute the mean squared error", function() {
@@ -98,6 +98,6 @@ describe("A neural network", function() {
         neuralNetwork.learn(1);
 
         // Check the mean squared error value
-        expect(neuralNetwork.meanSquarredError).toEqual(0.22272130329257442);
+        expect(neuralNetwork.meanSquarredError).toEqual(0.44544260658514884);
     });
 });
