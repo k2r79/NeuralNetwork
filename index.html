@@ -19,11 +19,12 @@
 			var GRID_WIDTH = 0;
 			var GRID_HEIGHT = 0; 
 
-            var HIDDEN_LAYER_PROPERTIES = [10];
+            var HIDDEN_LAYER_PROPERTIES = [5];
 			var OUTPUT_COUNT = 10;
 
-            var LEARNING_RATE = 0.20;
+            var LEARNING_RATE = 0.30;
             var VALIDATION_THRESHOLD = 0.50;
+            var TRAINING_THRESHOLD = 0.90;
 
 			var pixels = [];
 
@@ -40,6 +41,11 @@
                 neuralNetwork = new NeuralNetwork(GRID_WIDTH * GRID_HEIGHT, HIDDEN_LAYER_PROPERTIES, OUTPUT_COUNT, LEARNING_RATE);
 
 				resetCanvas();
+
+                do {
+                    // Learn the empty canvas
+                    learn(10, false);
+                } while(!isOutputCorrectForNumber(-1));
 
 				canvas.addEventListener("click", function(e) {
 					var mousePoint = mouseCanvasPosition(e);
@@ -316,8 +322,12 @@
                 <input type="button" value="9" />
             </div>
             <br/>
-            <input type="text" id="auto-learn-iterations" value="1"/>
             <input type="button" value="Auto-Learn" onclick="autoLearn()"/>
+            <div style="margin-top: 15px; font-size: 14px;">
+                Epoch : <span id="epoch">0</span>
+                <br/>
+                Validation errors : <span id="validation-errors">0%</span>
+            </div>
         </div>
         <div>
             <canvas id="errorChart" style="float: right;" width="800" height="400"></canvas>
@@ -350,24 +360,74 @@
         }
 
         function autoLearn() {
-            for (var iteration = 0; iteration < $("#auto-learn-iterations").val(); iteration++) {
-                console.log("Iteration : " + (iteration + 1));
+            var acceptableErrors = 0.10;
+            var epoch = 0;
+            var validationErrors = 0;
+
+            do {
+                $("#epoch").html(++epoch);
 
                 // Reset the canvas
                 resetCanvas();
 
-                // Learn the empty canvas
-                learn(10, false);
-
                 // For each number
-                for (var number = 0; number < neuralNetwork.outputLayer.neurons.length; number++) {
+                for (var number = 0; number < 2; number++) { // neuralNetwork.outputLayer.neurons.length
                     // Draw the number
                     drawNumber(number);
 
-                    // Teach the number
+                    // Learn the empty canvas
                     learn(number, false);
                 }
+
+                // Compute the validation errors
+                validationErrors = computeValidationError();
+
+                $("#validation-errors").html((validationErrors * 100) + "%");
+
+                console.log(validationErrors + " | " + epoch);
+
+                // Until the error is acceptable
+            } while (validationErrors > acceptableErrors && epoch <= 200);
+        }
+
+        function computeValidationError() {
+            var validationError = 0;
+
+            // For each number
+            for (var number = 0; number < neuralNetwork.outputLayer.neurons.length; number++) {
+                // Draw the number
+                drawNumber(number);
+
+                // Feed forward
+                neuralNetwork.forwardPropagate();
+
+                if (!isOutputCorrectForNumber(number)) {
+                    validationError++;
+                }
             }
+
+            console.log(validationError + " / " + number);
+
+            return validationError / number;
+        }
+
+        function isOutputCorrectForNumber(number) {
+            // For each output neuron
+            for (var outputNeuronIndex = 0; outputNeuronIndex < neuralNetwork.outputLayer.neurons.length; outputNeuronIndex++) {
+                // Check if the output is correct when the number is set
+                if (number != -1) {
+                    if ((number != outputNeuronIndex && neuralNetwork.outputLayer.neurons[outputNeuronIndex].output >= VALIDATION_THRESHOLD)
+                            || (number == outputNeuronIndex && neuralNetwork.outputLayer.neurons[outputNeuronIndex].output < VALIDATION_THRESHOLD)) {
+                        return false;
+                    }
+                } else {
+                    if (neuralNetwork.outputLayer.neurons[outputNeuronIndex].output >= TRAINING_THRESHOLD) {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
     </script>
 </html>
